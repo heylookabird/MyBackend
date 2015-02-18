@@ -42,7 +42,6 @@ public abstract class Button {
 		return bounds.height;
 	}
 	public boolean pressed(float x, float y){
-		System.out.println("check");
 		return bounds.contains(x, y);
 	}
 	

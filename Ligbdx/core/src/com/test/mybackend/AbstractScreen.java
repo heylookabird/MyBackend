@@ -2,14 +2,12 @@ package com.test.mybackend;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public abstract class AbstractScreen implements Screen {
 	private SpriteBatch batch;
 	private Texture background;
-	//private OrthographicCamera camera;
 	private float width, height;
 
 	@Override
@@ -21,7 +19,6 @@ public abstract class AbstractScreen implements Screen {
 		renderObjects(batch);
 		renderGui(batch);
 		batch.end();
-		// mainCamera.update();
 
 	}
 
@@ -48,7 +45,6 @@ public abstract class AbstractScreen implements Screen {
 	@Override
 	public void show() {
 
-		System.out.println("called");
 		width = Gdx.graphics.getWidth();
 		height = Gdx.graphics.getHeight();
 		batch = new SpriteBatch();
@@ -64,7 +60,6 @@ public abstract class AbstractScreen implements Screen {
 		 * mainCamera.update(); System.out.println(mainCamera.position);
 		 */
 
-		this.background = new Texture("badlogic.jpg");
 		abstractScreenInit();
 	}
 
