@@ -1,11 +1,20 @@
 package imagegallery;
-
+/*
+ * File: Button.java
+ * By: Harjit Randhawa
+ * Date: 2/17/15
+ * 
+ * 
+ * Description: Abstract button class that allows to move position, set the size
+ * but asks the children to specify what they want to run when they are actually pressed
+ * Passes in the parent(Singleton) gallery so that it can run it's actions
+ */
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 public abstract class Button {
-	public ImageGallery gallery;
+	protected ImageGallery gallery;
 	protected Rectangle bounds;
 	protected Texture image;
 	

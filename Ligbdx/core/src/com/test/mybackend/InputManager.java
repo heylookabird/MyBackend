@@ -2,7 +2,14 @@ package com.test.mybackend;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
-
+/*File: InputManager
+ * By: Harjit Randhawa
+ * 
+ * Description: Used by an instance of Game class or InputAdapter to manage input
+ * Libgdx specific class
+ * 
+ * 
+ */
 public class InputManager extends InputAdapter{
 	public static InputManager inputManager= new InputManager();
 	public InputManager(){

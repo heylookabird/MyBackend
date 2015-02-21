@@ -1,5 +1,23 @@
 package imagegallery;
-
+/*
+ * File: ImageGallery.java
+ * By: Harjit Randhawa
+ * Date: 2/17/15
+ * 
+ * Compile:
+ * 			Desktop: go to Test-desktop and run DesktopLauncher
+ * 			Android: go to Test-android and run AndroidLauncher and extract .apk file from
+ * 					Test-android/bin
+ * 
+ * System: Linux, Windows, Android devices, Macintosh
+ * 
+ * Description: Singleton type class in which all classes need are stored onto
+ * Extends from com.backend.Application so that Libgdx backend knows how to compile and run
+ * so that program works on multiple platforms
+ * 
+ * Handles focusing on specific Images in the reel and which inputs should be read based on the mode
+ * Also loads all of the images into the Reel
+ */
 
 
 import com.badlogic.gdx.Application.ApplicationType;
@@ -18,6 +36,7 @@ public class ImageGallery extends AbstractScreen {
 	private FileHandle dataFolder;
 	private Array<NavigationButton> nav;
 
+	private boolean moving = false;
 	public boolean focusing() {
 		return mode == 1;
 	}
@@ -41,7 +60,7 @@ public class ImageGallery extends AbstractScreen {
 
 	@Override
 	public void update(float deltaTime) {
-
+		reel.update();
 	}
 
 	@Override
@@ -145,7 +164,7 @@ public class ImageGallery extends AbstractScreen {
 	@Override
 	public boolean handleTouchInputUp(int screenx, int screeny, int pointer,
 			int button) {
-		if (!focusing()) {
+		if (!focusing() && !reel.moving()) {
 			screeny = (int) (height - screeny);
 			reel.handleTouchInput(screenx, screeny);
 			

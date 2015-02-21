@@ -1,5 +1,13 @@
 package com.test.mybackend;
 
+
+/*
+ * NOT USED IN CSC 690.  Created this backend to supplement my own personal coding
+ * This class is just one that I commonly use
+ * 
+ * 
+ * 
+ */
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
