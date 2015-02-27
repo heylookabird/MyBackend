@@ -41,6 +41,19 @@ public class Reel {
 		
 
 	}
+	
+	public ImageButton get(int index){		
+		if(index >= images.size){
+			index = index - images.size;
+		}else if(index < 0){
+			index = index + images.size;
+		}
+		
+		index = Math.abs(index%images.size);
+		
+		return images.get(index);
+	}
+	
 
 	// positions buttons through iteration and determines their y position by
 	// finding the middle of the screen
@@ -52,8 +65,10 @@ public class Reel {
 			images.get(j).resize();
 			images.get(j).setPosition(reelStart + (j * (sectionWid + spacing)),
 					yPos);
-
 		}
+		
+		rightEndPositionX = images.get(rightMostImage).bounds.x;
+
 	}
 	
 	private void repositionEnds(boolean left){
@@ -138,7 +153,6 @@ public class Reel {
 		size++;
 		rightMostImage = size - 1;
 		
-		rightEndPositionX = images.get(rightMostImage).bounds.x;
 
 	}
 
@@ -155,6 +169,10 @@ public class Reel {
 					button.press();
 			}
 		}
+	}
+	
+	public int getIndex(ImageButton button){
+		return images.indexOf(button, true);
 	}
 
 	// only renders within screen

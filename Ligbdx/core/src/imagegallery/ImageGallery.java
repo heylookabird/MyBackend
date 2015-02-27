@@ -1,4 +1,5 @@
 package imagegallery;
+
 /*
  * File: ImageGallery.java
  * By: Harjit Randhawa
@@ -19,7 +20,6 @@ package imagegallery;
  * Also loads all of the images into the Reel
  */
 
-
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -29,28 +29,29 @@ import com.test.mybackend.AbstractScreen;
 
 public class ImageGallery extends AbstractScreen {
 	public int mode; // mode 0 = gallery, mode 1 = zoom
-	public ImageButton selectedImage;
+	public int selectedImage;
 	public float height, width;
 	private Reel reel;
-	private NavigationButton left, right, leftskip, rightskip;
+	private NavigationButton left, right, leftskip, rightskip, zoomout;
 	private FileHandle dataFolder;
 	private Array<NavigationButton> nav;
-
+	private float zoomOutSize;
 	private boolean moving = false;
+
 	public boolean focusing() {
 		return mode == 1;
 	}
 
 	public void focus(ImageButton image) {
-		this.selectedImage = image;
+		this.selectedImage = reel.getIndex(image);
 		mode = 1;
 	}
-	
-	public float getSectionWidth(){
+
+	public float getSectionWidth() {
 		return reel.sectionWid;
 	}
-	
-	public float getSectionHeight(){
+
+	public float getSectionHeight() {
 		return reel.sectionHeight;
 	}
 
@@ -71,13 +72,14 @@ public class ImageGallery extends AbstractScreen {
 	@Override
 	public void renderGui(SpriteBatch batch) {
 		if (mode == 1) {
-			selectedImage.renderZoomed(batch);
+			reel.get(selectedImage).renderZoomed(batch);
+			zoomout.render(batch);
 		} else {
 			reel.render(batch);
-			
-			for(NavigationButton button: nav){
-				button.render(batch);
-			}
+		}
+
+		for (NavigationButton button : nav) {
+			button.render(batch);
 		}
 	}
 
@@ -87,44 +89,52 @@ public class ImageGallery extends AbstractScreen {
 		height = Gdx.graphics.getHeight();
 		width = Gdx.graphics.getWidth();
 		nav = new Array<NavigationButton>();
-		
-		if(Gdx.app.getType() == ApplicationType.Android){
+
+		if (Gdx.app.getType() == ApplicationType.Android) {
 			dataFolder = Gdx.files.internal("images/");
-		}else if(Gdx.app.getType() == ApplicationType.Desktop){
+		} else if (Gdx.app.getType() == ApplicationType.Desktop) {
 			dataFolder = Gdx.files.internal("./bin/images/");
 		}
-		
 
 		this.setBackgroundImage(null);
 		reel = new Reel(this);
-		
+
 		for (FileHandle fileEntry : dataFolder.list()) {
 			String f = "images/" + fileEntry.name();
 			System.out.println(f);
-			if (f.contains(".jpg")
-					|| f.contains(".png")) {
+			if (f.contains(".jpg") || f.contains(".png")) {
 				reel.addToReel(f);
 			}
 
 		}
 
-		
+		zoomOutSize = width / 4f;
+
 		reel.positionButtons();
-
-		float arrowsize = width/10f;
-		left = new NavigationButton(this, "arrowright.png", true, false);
 		
-		left.bounds.set(arrowsize *2, 0, arrowsize, arrowsize);
+		zoomout = new NavigationButton(this, "zoom_out.png", false, false){
+			@Override
+			public void press(){
+				zoomOut();
+			}
+		};
 
-		right = new NavigationButton(this, "arrowleft.png", false, false);
-		right.bounds.set(width - (arrowsize *3), 0f, arrowsize, arrowsize);
-		
-		leftskip = new NavigationButton(this, "skipleft.jpg", true, true);
+		float arrowsize = width / 10f;
+		zoomout.bounds.set(width/2f - arrowsize/2f, 0, arrowsize, arrowsize);
+
+		left = new NavigationButton(this, "arrowright.png", false, false);
+
+		left.bounds.set(arrowsize, 0, arrowsize, arrowsize);
+
+		right = new NavigationButton(this, "arrowleft.png", true, false);
+		right.bounds.set(width - (arrowsize * 2), 0f, arrowsize, arrowsize);
+
+		leftskip = new NavigationButton(this, "skipleft.jpg", false, true);
 		leftskip.bounds.set(0, 0, arrowsize, arrowsize);
-		
-		rightskip = new NavigationButton(this, "skipright.jpg", false, true);
-		rightskip.bounds.set(width - arrowsize, 0 , arrowsize, arrowsize);
-		
+
+		rightskip = new NavigationButton(this, "skipright.jpg", true, true);
+		rightskip.bounds.set(width - arrowsize, 0, arrowsize, arrowsize);
+
 		nav.addAll(right, left, rightskip, leftskip);
 
 	}
@@ -164,17 +174,23 @@ public class ImageGallery extends AbstractScreen {
 	@Override
 	public boolean handleTouchInputUp(int screenx, int screeny, int pointer,
 			int button) {
+		screeny = (int) (height - screeny);
+
 		if (!focusing() && !reel.moving()) {
-			screeny = (int) (height - screeny);
 			reel.handleTouchInput(screenx, screeny);
-			
-		for(int i = 0; i < nav.size; i++){
-			NavigationButton navi = nav.get(i);
-			if(navi.pressed(screenx, screeny))
-				navi.press();
+
+		} else {
+			if(zoomout.pressed(screenx, screeny))
+				zoomout.press();
 		}
-		} else
-			zoomOut();
+
+		if (!reel.moving()) {
+			for (int i = 0; i < nav.size; i++) {
+				NavigationButton navi = nav.get(i);
+				if (navi.pressed(screenx, screeny))
+					navi.press();
+			}
+		}
 
 		return false;
 	}
